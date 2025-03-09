@@ -7,12 +7,22 @@
 #define F FF/2
 #define F1 (FF-1)
 
-typedef struct registro {
+typedef struct  {
 	int matricula;
 	float nota;
 	char estado[3];
 	char cidade[51];
 	char curso[31];
-} registro;
+} Aluno;
+
+typedef struct {
+    Aluno registros[TAMMEMORIA];
+    int tamanho;
+} MemoriaInterna;
+
+typedef struct {
+    FILE *fita;
+    int numRegistros;
+} Fita;
 
 #endif
