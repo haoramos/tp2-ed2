@@ -3,6 +3,7 @@
 #include <string.h>
 
 #include "structs.h"
+#include "quickext.h"
 
 void geraArquivo(FILE* arq, FILE* temp, int quantidade){
   Aluno aux;
@@ -27,7 +28,7 @@ int main(int argc, char const *argv[])
   //   return 1;
   // }
 
-  // int metodo = atoi(argv[1]);
+  int metodo = 3;//atoi(argv[1]);
   int quantidade = 10;
   // int situacao = atoi(argv[3]);
   // int imprimir = (argc > 4 && strcmp(argv[4], "-P") == 0);
@@ -41,12 +42,49 @@ int main(int argc, char const *argv[])
   }
   
   geraArquivo(arq, temp, quantidade);
+  rewind(temp);
+  
+  switch (metodo)
+  {
+    case 1:
+      printf("=== Intercalação balanceada de vários caminhos (2f fitas) ===\n");
+      break;
+        
+    case 2:
+      printf("=== Intercalação balanceada de vários caminhos (2f fitas) ===\n");
+      break;
+      
+      case 3:
+      printf("=== QuickSort Externo ===");
+      printf("\nentrou");
+      fflush(stdout);
+      
+      FILE* arquivoEscritaBaixo = fopen("a1.bin", "wb+"); // Arquivo auxiliar inferior
+      FILE* arquivoEscritaAlto = fopen("a2.bin", "wb+"); // Arquivo auxiliar superior
+      
+      if (!arquivoEscritaBaixo || !arquivoEscritaAlto) {
+        perror("Erro ao abrir os arquivos auxiliares");
+        exit(EXIT_FAILURE);
+      }
+      
+      QuicksortExterno(&temp, &arquivoEscritaBaixo, &arquivoEscritaAlto, 0, quantidade - 1);
+      
+      fflush(temp);
+      fclose(arquivoEscritaBaixo);
+      fclose(arquivoEscritaAlto);
+      break;
+        
+    default:
+      printf("Método inválido!\n");
+  }
 
-  FILE* fitasEntrada[19];
-  FILE* fitasSaida;
+
+  Aluno aux;
+  while(fread(&aux, sizeof(Aluno), 1, temp)) printf("Nota: %.1f\n", aux.nota);
+
   fclose(arq);
   fclose(temp);
-  
+    
   return 0;
 }
 

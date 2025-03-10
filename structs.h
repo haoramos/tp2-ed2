@@ -30,9 +30,4 @@ typedef struct {
     int numRegistros;
 } Fita;
 
-typedef struct {
-    Aluno registros[TAMMEMORIA];  // Vetor de registros com o tamanho máximo da memória interna
-    int numRegistros;  // Número atual de registros na área
-} TipoEsp;
-
 #endif
