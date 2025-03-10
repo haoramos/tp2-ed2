@@ -1,16 +1,24 @@
 {
   "configurations": [
     {
+<<<<<<< HEAD
+      "name": "linux-gcc-x64",
+=======
       "name": "Linux",
+>>>>>>> refs/remotes/origin/main
       "includePath": [
-        "/usr/include",
-        "/usr/local/include",
         "${workspaceFolder}/**"
       ],
       "compilerPath": "/usr/bin/gcc",
+<<<<<<< HEAD
+      "cStandard": "${default}",
+      "cppStandard": "${default}",
+      "intelliSenseMode": "linux-gcc-x64",
+=======
       "cStandard": "c11",
       "cppStandard": "c++17",
       "intelliSenseMode": "clang-x86",
+>>>>>>> refs/remotes/origin/main
       "compilerArgs": [
         "-Wall",
         "-Wextra"
