@@ -8,7 +8,7 @@
 #define F1 (FF-1)
 
 typedef struct  {
-	int matricula;
+	long matricula;
 	float nota;
 	char estado[3];
 	char cidade[51];
