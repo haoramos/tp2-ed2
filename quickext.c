@@ -1,31 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define FALSE 0
-#define TRUE 1
-#define TAMEsp 10  // Tamanho máximo da área de memória interna
-
-typedef struct {
-    int inscricao;  
-    float nota;     
-    char estado[3]; 
-    char cidade[51];
-    char curso[31]; 
-} TipoRegistro;
-
-typedef struct {
-    TipoRegistro registros[TAMEsp];  // Vetor de registros com o tamanho máximo da memória interna
-    int numRegistros;  // Número atual de registros na área
-} TipoEsp;
+#include "structs.h"
 
 // Funções auxiliares
-void LeSup(FILE **ArqLEs, TipoRegistro *UltLido, int *Ls, short *OndeLer);
-void LeInf(FILE **ArqLi, TipoRegistro *UltLido, int *Li, short *OndeLer);
-void EscreveMin(FILE **ArqEi, TipoRegistro R, int *Ei);
-void EscreveMax(FILE **ArqLEs, TipoRegistro R, int *Es);
-void InserirEsp(TipoEsp *Esp, TipoRegistro *Reg, int *NREsp);
-void RetiraMin(TipoEsp *Esp, TipoRegistro *R, int *NREsp);
-void RetiraMax(TipoEsp *Esp, TipoRegistro *R, int *NREsp);
+void LeSup(FILE **ArqLEs, Aluno *UltLido, int *Ls, short *OndeLer);
+void LeInf(FILE **ArqLi, Aluno *UltLido, int *Li, short *OndeLer);
+void EscreveMin(FILE **ArqEi, Aluno R, int *Ei);
+void EscreveMax(FILE **ArqLEs, Aluno R, int *Es);
+void InserirEsp(TipoEsp *Esp, Aluno *Reg, int *NREsp);
+void RetiraMin(TipoEsp *Esp, Aluno *R, int *NREsp);
+void RetiraMax(TipoEsp *Esp, Aluno *R, int *NREsp);
 
 // Função de Partição (Quicksort Externo)
 void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, TipoEsp *Esp, int Esq, int Dir, int *i, int *j) {
@@ -34,21 +19,21 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, TipoEsp *Esp, int Esq, 
     int Li = Esq;  // Limite inferior da partição
     int Ei = Esq;  // Posição de escrita no arquivo de saída inferior
     int NREsp = 0;  // Número de registros na área de memória interna
-    float Linf = -10000000;  // Limite inferior do pivô
-    float Lsup = 10000000;   // Limite superior do pivô
+    float Linf = -99999999;  // Limite inferior do pivô
+    float Lsup = 99999999;   // Limite superior do pivô
     short OndeLer = TRUE;    // Flag para indicar de onde ler (TRUE = superior, FALSE = inferior)
-    TipoRegistro UltLido, R;
+    Aluno UltLido, R;
 
     // Posiciona os ponteiros dos arquivos no início das partes a serem lidas
-    fseek(*ArqLi, (Li - 1) * sizeof(TipoRegistro), SEEK_SET);
-    fseek(*ArqEi, (Ei - 1) * sizeof(TipoRegistro), SEEK_SET);
+    fseek(*ArqLi, (Li - 1) * sizeof(Aluno), SEEK_SET);
+    fseek(*ArqEi, (Ei - 1) * sizeof(Aluno), SEEK_SET);
 
     *i = Esq - 1;  // Inicializa o índice esquerdo
     *j = Dir + 1;  // Inicializa o índice direito
 
     while (Ls >= Li) {
         // Se a área de memória interna ainda não está cheia, leia um registro
-        if (NREsp < TAMEsp - 1) {
+        if (NREsp < TAMMEMORIA - 1) {
             if (OndeLer) {
                 LeSup(ArqLEs, &UltLido, &Ls, &OndeLer);  // Lê do arquivo superior
             } else {
@@ -119,41 +104,41 @@ void QuicksortExterno(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Di
 }
 
 // Funções auxiliares implementadas
-void LeSup(FILE **ArqLEs, TipoRegistro *UltLido, int *Ls, short *OndeLer) {
-    fseek(*ArqLEs, (*Ls - 1) * sizeof(TipoRegistro), SEEK_SET);
-    if (fread(UltLido, sizeof(TipoRegistro), 1, *ArqLEs) == 1) {
+void LeSup(FILE **ArqLEs, Aluno *UltLido, int *Ls, short *OndeLer) {
+    fseek(*ArqLEs, (*Ls - 1) * sizeof(Aluno), SEEK_SET);
+    if (fread(UltLido, sizeof(Aluno), 1, *ArqLEs) == 1) {
         (*Ls)--;
     } else {
         *OndeLer = FALSE;
     }
 }
 
-void LeInf(FILE **ArqLi, TipoRegistro *UltLido, int *Li, short *OndeLer) {
-    fseek(*ArqLi, (*Li - 1) * sizeof(TipoRegistro), SEEK_SET);
-    if (fread(UltLido, sizeof(TipoRegistro), 1, *ArqLi) == 1) {
+void LeInf(FILE **ArqLi, Aluno *UltLido, int *Li, short *OndeLer) {
+    fseek(*ArqLi, (*Li - 1) * sizeof(Aluno), SEEK_SET);
+    if (fread(UltLido, sizeof(Aluno), 1, *ArqLi) == 1) {
         (*Li)++;
     } else {
         *OndeLer = TRUE;
     }
 }
 
-void EscreveMin(FILE **ArqEi, TipoRegistro R, int *Ei) {
-    fseek(*ArqEi, (*Ei - 1) * sizeof(TipoRegistro), SEEK_SET);
-    fwrite(&R, sizeof(TipoRegistro), 1, *ArqEi);
+void EscreveMin(FILE **ArqEi, Aluno R, int *Ei) {
+    fseek(*ArqEi, (*Ei - 1) * sizeof(Aluno), SEEK_SET);
+    fwrite(&R, sizeof(Aluno), 1, *ArqEi);
     (*Ei)++;
 }
 
-void EscreveMax(FILE **ArqLEs, TipoRegistro R, int *Es) {
-    fseek(*ArqLEs, (*Es - 1) * sizeof(TipoRegistro), SEEK_SET);
-    fwrite(&R, sizeof(TipoRegistro), 1, *ArqLEs);
+void EscreveMax(FILE **ArqLEs, Aluno R, int *Es) {
+    fseek(*ArqLEs, (*Es - 1) * sizeof(Aluno), SEEK_SET);
+    fwrite(&R, sizeof(Aluno), 1, *ArqLEs);
     (*Es)--;
 }
 
-void InserirEsp(TipoEsp *Esp, TipoRegistro *Reg, int *NREsp) {
+void InserirEsp(TipoEsp *Esp, Aluno *Reg, int *NREsp) {
     Esp->registros[(*NREsp)++] = *Reg;  // Insere o registro na área e incrementa o contador
 }
 
-void RetiraMin(TipoEsp *Esp, TipoRegistro *R, int *NREsp) {
+void RetiraMin(TipoEsp *Esp, Aluno *R, int *NREsp) {
     int i, minIndex = 0;
     for (i = 1; i < *NREsp; i++) {
         if (Esp->registros[i].nota < Esp->registros[minIndex].nota) {
@@ -167,7 +152,7 @@ void RetiraMin(TipoEsp *Esp, TipoRegistro *R, int *NREsp) {
     (*NREsp)--;
 }
 
-void RetiraMax(TipoEsp *Esp, TipoRegistro *R, int *NREsp) {
+void RetiraMax(TipoEsp *Esp, Aluno *R, int *NREsp) {
     int i, maxIndex = 0;
     for (i = 1; i < *NREsp; i++) {
         if (Esp->registros[i].nota > Esp->registros[maxIndex].nota) {
