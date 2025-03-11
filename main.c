@@ -47,7 +47,7 @@ int main(int argc, char const *argv[]) {
     }
 
     geraArquivo(arq, temp, quantidade);
-    rewind(temp);
+    fseek(temp, 0, SEEK_SET);
 
     ImprimirArquivo(temp);
 

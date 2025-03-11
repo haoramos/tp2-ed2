@@ -19,12 +19,6 @@ void trocaShort(short v[], int a, int b){
   v[b] = x;
 }
 
-int ehMenorMarcado(Aluno v[], short m[], int a, int b){
-  if (m[a] != 0) return 0;
-  if (m[b] != 0) return 1;
-  return v[b].nota < v[a].nota;  
-}
-
 void heapRefazMarcados(Aluno v[], short m[], int i, int n){
   int menor = i;
   int esq = 2 * i + 1;
