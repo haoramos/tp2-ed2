@@ -7,10 +7,8 @@
 #define F FF/2
 #define F1 (FF-1)
 
-enum Bool {
-	FALSE,
-	TRUE,
-};
+// Definição do tipo enum Bool
+typedef enum { FALSE, TRUE } Bool;
 
 typedef struct  {
 	long matricula;
