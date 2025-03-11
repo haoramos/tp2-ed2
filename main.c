@@ -31,7 +31,7 @@ void ImprimirArquivo(FILE *Arq) {
 
 int main(int argc, char const *argv[]) {
     int metodo = 3; // Método de ordenação (3 = Quicksort Externo)
-    int quantidade = 10; // Número de registros a serem lidos
+    int quantidade = 20; // Número de registros a serem lidos
 
     FILE* temp = fopen("temp.bin", "w+b");
     if (!temp) {

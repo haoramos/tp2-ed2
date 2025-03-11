@@ -13,7 +13,7 @@ void QuicksortExterno(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Di
 
     if (Dir - Esq < 1) return;
 
-    Particao(ArqLi, ArqEi, ArqLEs, &Area, Esq, Dir, &i, &j);
+    Particao(ArqLi, ArqEi, ArqLEs, Area, Esq, Dir, &i, &j);
 
     if (i - Esq < Dir - j) {
         QuicksortExterno(ArqLi, ArqEi, ArqLEs, Esq, i);
@@ -24,26 +24,25 @@ void QuicksortExterno(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Di
     }
 }
 
-void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, MemoriaInterna *Area, int Esq, int Dir, int *i, int *j) {
+void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, MemoriaInterna Area, int Esq, int Dir, int *i, int *j) {
     int Ls = Dir, Es = Dir, Li = Esq, Ei = Esq, NRArea = 0;
-    int Linf = INT_MIN, Lsup = INT_MAX;
+    float Linf = -999999999.0, Lsup = 999999999.0;
     Bool OndeLer = TRUE;
     Aluno UltLido, R;
 
-    printf("=== Particao ===\n");
-    printf("Esq: %d, Dir: %d\n", Esq, Dir);
+    fseek(*ArqLi, (Li - 1) * sizeof(Aluno), SEEK_SET);
+    fseek(*ArqEi, (Ei - 1) * sizeof(Aluno), SEEK_SET);
+
+    *i = Esq - 1; *j = Dir + 1;
 
     while (Ls >= Li) {
-        if (NRArea < TAMAREA - 1) {
+        if (NRArea < TAMMEMORIA - 1) {
             if (OndeLer) {
-                printf("Lendo superior: Ls = %d\n", Ls);
                 LeSup(ArqLEs, &UltLido, &Ls, &OndeLer);
             } else {
-                printf("Lendo inferior: Li = %d\n", Li);
                 LeInf(ArqLi, &UltLido, &Li, &OndeLer);
             }
-            printf("Inserindo na área: Matrícula = %d | Nota %.1f\n", UltLido.matricula, UltLido.nota);
-            InserirArea(Area, &UltLido, &NRArea);
+            InserirArea(&Area, &UltLido, &NRArea); // Insere de forma ordenada
             continue;
         }
 
@@ -56,36 +55,38 @@ void Particao(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, MemoriaInterna *Area, i
         else
             LeInf(ArqLi, &UltLido, &Li, &OndeLer);
 
-        if (UltLido.matricula > Lsup) {
+        if (UltLido.nota > Lsup) {
             *j = Es;
             EscreveMax(ArqLEs, UltLido, &Es);
             continue;
         }
 
-        if (UltLido.matricula < Linf) {
+        if (UltLido.nota < Linf) {
             *i = Ei;
             EscreveMin(ArqEi, UltLido, &Ei);
             continue;
         }
 
-        InserirArea(Area, &UltLido, &NRArea);
+        InserirArea(&Area, &UltLido, &NRArea);
 
         if (Ei - Esq < Dir - Es) {
-            RetiraMin(Area, &R, &NRArea);
+            RetiraMin(&Area, &R, &NRArea);
             EscreveMin(ArqEi, R, &Ei);
-            Linf = R.matricula;
+            Linf = R.nota;
         } else {
-            RetiraMax(Area, &R, &NRArea);
+            RetiraMax(&Area, &R, &NRArea);
             EscreveMax(ArqLEs, R, &Es);
-            Lsup = R.matricula;
+            Lsup = R.nota;
         }
     }
 
-    while (Ei <= Es) {
-        RetiraMin(Area, &R, &NRArea);
+    while (NRArea > 0) {
+        RetiraMin(&Area, &R, &NRArea);
         EscreveMin(ArqEi, R, &Ei);
     }
 }
+
+
 
 void LeSup(FILE **ArqLEs, Aluno *UltLido, int *Ls, Bool *OndeLer) {
     fseek(*ArqLEs, (*Ls - 1) * sizeof(Aluno), SEEK_SET);
@@ -99,16 +100,26 @@ void LeInf(FILE **ArqLi, Aluno *UltLido, int *Li, Bool *OndeLer) {
     (*Li)++;
     *OndeLer = TRUE;
 }
-
-void InserirArea(MemoriaInterna *Area, Aluno *UltLido, int *NRArea) {
-    int i = Area->tamanho - 1;
-    while (i >= 0 && Area->registros[i].matricula > UltLido->matricula) {
-        Area->registros[i + 1] = Area->registros[i];
-        i--;
-    }
-    Area->registros[i + 1] = *UltLido;
+void InsereItem(MemoriaInterna *Area, Aluno *NovoAluno) {
+    // Adiciona o novo aluno ao final da área
+    Area->registros[Area->tamanho] = *NovoAluno;
     Area->tamanho++;
-    (*NRArea)++;
+
+    // Ordena a área usando Bubble Sort
+    for (int i = Area->tamanho - 1; i > 0; i--) {
+        for (int j = 0; j < i; j++) {
+            if (Area->registros[j].nota > Area->registros[j + 1].nota) {
+                // Troca os alunos
+                Aluno temp = Area->registros[j];
+                Area->registros[j] = Area->registros[j + 1];
+                Area->registros[j + 1] = temp;
+            }
+        }
+    }
+}
+void InserirArea(MemoriaInterna *Area, Aluno *UltLido, int *NRArea) {
+    InsereItem(Area, UltLido); // Insere o novo aluno de forma ordenada
+    (*NRArea)++; // Incrementa o número de registros na área
 }
 
 void EscreveMax(FILE **ArqLEs, Aluno R, int *Es) {
