@@ -3,7 +3,6 @@
 
 #include "structs.h"
 
-void heapSortMarcados(Aluno[], int);
-
+void heapSortMarcados(Aluno[], int n);
 
 #endif
