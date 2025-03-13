@@ -23,6 +23,12 @@ typedef struct {
 	int celaux;
 } MemoriaInterna;
 
+//Variaveis para o relatório
+// long long numLeituras = 0;
+// long long numEscritas = 0;
+// long long numComparacoes = 0;
+// clock_t tempoInicio, tempoFim;
+
 
 
 #endif

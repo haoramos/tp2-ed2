@@ -1,15 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
-
+#include <time.h>
 #include "quickext.h"
 
 #define TAMAREA TAMMEMORIA
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <limits.h>
-
 
 MemoriaInterna Inicializa(){
     MemoriaInterna Area;
@@ -171,9 +166,10 @@ void ImprimirIntervalo(FILE *arq, int inicio, int fim) {
 
 void QuickSortExterno(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Dir) {
     int i, j;
-    // Verifica se o intervalo é válido
+    
     if (Dir - Esq < 1) 
         return;
+
     // Inicializa a memória interna
     MemoriaInterna Area = Inicializa();
 
@@ -185,7 +181,6 @@ void QuickSortExterno(FILE **ArqLi, FILE **ArqEi, FILE **ArqLEs, int Esq, int Di
 
     // printf("\nIntervalo Esq até i:\n");
     // ImprimirIntervalo(*ArqLi, Esq, i);
-
     //  printf("\nIntervalo de i até j:\n");
     //  ImprimirIntervalo(*ArqLi, i+1, j-1);
     //  printf("\nIntervalo dir até j:\n");
