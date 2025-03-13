@@ -1,7 +1,7 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
-#define TAMMEMORIA 10 // tam da memoria principal
+#define TAMMEMORIA 10// tam da memoria principal
 
 #define FF 20 // qtd de fitas
 #define F FF/2
@@ -20,12 +20,9 @@ typedef struct  {
 
 typedef struct {
     Aluno registros[TAMMEMORIA];
-    int tamanho;
+	int celaux;
 } MemoriaInterna;
 
-typedef struct {
-    FILE *fita;
-    int numRegistros;
-} Fita;
+
 
 #endif

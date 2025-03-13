@@ -14,7 +14,7 @@ void geraArquivo(FILE* arq, FILE* temp, int quantidade){
     fgets(aux.cidade, 50, arq);
     fseek(arq, 2, 1);
     fgets(aux.curso, 30, arq);
-    printf("\n%08ld %.1f %s %s %s\n", aux.matricula, aux.nota, aux.estado, aux.cidade, aux.curso);
+    // printf("\n%08ld %.1f %s %s %s\n", aux.matricula, aux.nota, aux.estado, aux.cidade, aux.curso);
     fwrite(&aux, sizeof(Aluno), 1, temp);
   }
 }
@@ -24,15 +24,14 @@ void ImprimirArquivo(FILE *Arq) {
     fseek(Arq, 0, SEEK_SET);
     printf("=== Conteúdo do arquivo ===\n");
     while (fread(&aluno, sizeof(Aluno), 1, Arq)) {
-        printf("Matrícula: %d | Nota: %.1f\n", aluno.matricula, aluno.nota);
+        printf("Matrícula: %ld | Nota: %.1f\n", aluno.matricula, aluno.nota);
     }
     printf("==========================\n");
 }
 
 int main(int argc, char const *argv[]) {
     int metodo = 3; // Método de ordenação (3 = Quicksort Externo)
-    int quantidade = 20; // Número de registros a serem lidos
-
+    int quantidade = 471705;// Número de registros a serem lidos
     FILE* temp = fopen("temp.bin", "w+b");
     if (!temp) {
         perror("Erro ao abrir o arquivo temp.bin");
@@ -70,7 +69,7 @@ int main(int argc, char const *argv[]) {
         }
 
         // Chama o Quicksort Externo
-        QuicksortExterno(&arquivoCentral, &arquivoEscritaBaixo, &arquivoEscritaAlto, 0, quantidade - 1);
+        QuickSortExterno(&arquivoCentral, &arquivoEscritaBaixo, &arquivoEscritaAlto, 1, quantidade  );
 
         // Fecha os arquivos
         fclose(arquivoEscritaBaixo);
